@@ -32,11 +32,11 @@ export default function Header(){
           <a href="#why" className="nav-link">Why TOTPly</a>
           <a href="#how" className="nav-link">How it works</a>
           <a href="#features" className="nav-link">Features</a>
-          {auth.isAuthenticated ? <Link to="/dashboard" className="nav-link">Dashboard</Link> : <Link to="/login" className="nav-link">Login</Link>}
+          {auth.isAuthenticated ? <Link to="/dashboard" className="nav-link">Dashboard</Link> : null}
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link to="/login"><Button variant="ghost">Login</Button></Link>
+          <Link to="/login"><Button variant="ghost" className="text-link">Log in</Button></Link>
           <Link to="/register"><Button className="signup-btn">Sign up</Button></Link>
         </div>
 
