@@ -25,6 +25,16 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const scrollTo = (id: string) => {
     if (isHome) {
       const element = document.getElementById(id);
@@ -105,36 +115,55 @@ export default function Header() {
         </div>
 
         {mobileOpen && (
-          <div className="mobile-menu fixed right-0 top-0 h-full w-72 bg-white shadow-lg p-6">
-            <div className="flex flex-col gap-4">
+          <div className="mobile-menu fixed right-0 top-0 h-full w-72 bg-white shadow-2xl p-6 z-50 flex flex-col">
+            <div className="flex justify-end mb-4">
+              <button onClick={() => setMobileOpen(false)} className="p-2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0e172a" strokeWidth="2">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex flex-col gap-2 text-lg font-semibold text-slate-800">
               <a
                 href="#why"
                 onClick={(e) => handleMobileNavClick(e, 'why')}
-                className="p-2 rounded-md hover:bg-[rgba(201,228,235,0.18)]"
+                className="p-3 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 Why TOTPly
               </a>
               <a
                 href="#how"
                 onClick={(e) => handleMobileNavClick(e, 'how')}
-                className="p-2 rounded-md hover:bg-[rgba(231,211,242,0.18)]"
+                className="p-3 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 How it works
               </a>
               {auth.isAuthenticated ? (
-                <Link to="/dashboard" className="p-2 rounded-md">
+                <Link 
+                  to="/dashboard" 
+                  onClick={() => setMobileOpen(false)}
+                  className="p-3 rounded-xl hover:bg-gray-50 transition-colors"
+                >
                   Dashboard
                 </Link>
               ) : (
-                <Link to="/login" className="p-2 rounded-md">
-                  Login
-                </Link>
+                <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-gray-100">
+                  <Link 
+                    to="/login" 
+                    onClick={() => setMobileOpen(false)}
+                  >
+                     <div className="w-full h-[54px] flex items-center justify-center rounded-[18px] border-2 border-slate-200 text-slate-700 font-bold transition-all duration-200 ease-in-out hover:scale-[1.02] hover:shadow-[0_12px_40px_0_rgba(31,38,135,0.15)] hover:bg-slate-50 hover:border-slate-300">
+                      Log in
+                    </div>
+                  </Link>
+                  <Link 
+                    to="/register"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <div className="w-full gradient-btn flex items-center justify-center">Sign up</div>
+                  </Link>
+                </div>
               )}
-              <div className="mt-4">
-                <Link to="/register">
-                  <button className="gradient-btn">Sign up</button>
-                </Link>
-              </div>
             </div>
           </div>
         )}

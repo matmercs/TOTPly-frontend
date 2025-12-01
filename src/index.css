@@ -197,13 +197,14 @@ html, body {
   .text-muted { color: #6b7280 }
 
   .auth-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; min-height: 80vh; align-items: center }
-  .auth-left { position: relative; height: 100%; display: flex; align-items: center; justify-content: center }
+  
+  .auth-left { display: none }
   .auth-left .decor { position: absolute; border-radius: 9999px; filter: blur(40px); opacity: 0.95; z-index: 0 }
   .auth-left .decor.circle-1 { width: 420px; height: 420px; background: #e7c9c8; box-shadow: 0 40px 120px rgba(231,201,200,0.35); left: -60px; top: 40%; transform: translateY(20%); }
   .auth-left .decor.circle-2 { width: 300px; height: 300px; background: rgba(232,211,242,0.45); box-shadow: 0 30px 80px rgba(232,211,242,0.28); right: -40px; top: 60%; transform: translateY(10%); }
   .auth-left .decor.spot { width: 180px; height: 180px; background: rgba(168,219,226,0.18); filter: blur(36px); left: 10%; bottom: -30px }
 
-  .auth-right { display: flex; align-items: center; justify-content: center }
+  .auth-right { display: flex; align-items: center; justify-content: center; width: 100% }
   .form-card { background: var(--color-white); border-radius: 18px; padding: 2.25rem; box-shadow: 0 12px 40px rgba(2,6,23,0.06); border: 1px solid rgba(201,228,235,0.18); max-width: 520px; width: 100%; position: relative; z-index: 20 }
   .form-card h3 { font-size: 1.5rem; margin-bottom: 0.25rem }
   .form-sub { color: rgba(14,23,42,0.6); margin-bottom: 1rem }
@@ -265,7 +266,7 @@ html, body {
 
   @media (min-width: 768px) {
     .auth-grid { grid-template-columns: 1fr 1fr }
-    .auth-left { min-height: 520px }
+    .auth-left { display: flex; position: relative; height: 100%; align-items: center; justify-content: center; min-height: 520px }
   }
 
   .site-footer {
@@ -278,7 +279,7 @@ html, body {
   }
   .site-footer__inner { padding: 0 1rem; position: relative; z-index: 10; }
   
-  /* Static Footer Background Abstractions */
+  
   .site-footer::before {
     content: '';
     position: absolute;
