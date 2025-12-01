@@ -1,11 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Footer(){
   return (
     <footer className="site-footer">
-      <div className="site-footer__inner container">
-  <div className="site-footer__top grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="footer-col">
+      <div className="container site-footer__inner">
+        <div className="site-footer__top grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="footer-col flex flex-col items-center text-center md:items-start md:text-left">
             <div className="flex items-center gap-3">
               <div>
                 <h4 className="footer-logo">TOTPly <span className="footer-dot" aria-hidden></span></h4>
@@ -14,9 +15,9 @@ export default function Footer(){
             </div>
           </div>
 
-          <div className="footer-col">
+          <div className="footer-col flex flex-col items-center text-center">
             <h5 className="col-title">Navigation</h5>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-3 space-y-2 flex flex-col items-center">
               <li><a href="#why" className="footer-link">Why TOTPly</a></li>
               <li><a href="#how" className="footer-link">How it works</a></li>
               <li><a href="#features" className="footer-link">Features</a></li>
@@ -24,9 +25,9 @@ export default function Footer(){
             </ul>
           </div>
 
-          <div className="footer-col">
+          <div className="footer-col flex flex-col items-center text-center md:items-end md:text-right">
             <h5 className="col-title">Contact</h5>
-            <ul className="mt-3 flex items-center gap-3">
+            <ul className="mt-3 flex items-center gap-3 justify-center md:justify-end">
               <li>
                 <a href="mailto:hello@totply.example" aria-label="email" className="social-icon" title="Email">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 8.5v7.5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5"/><path d="M21 6.5l-9 6-9-6"/></svg>

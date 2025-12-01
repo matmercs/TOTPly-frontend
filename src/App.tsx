@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import ErrorBoundary from './components/ErrorBoundary'
+import ScrollToTop from './components/ScrollToTop'
 import './i18n'
 
 export default function App(){
@@ -18,6 +19,7 @@ export default function App(){
     <AuthProvider>
       <ErrorBoundary>
       <div className="min-h-screen bg-[var(--color-white)] text-gray-900">
+        <ScrollToTop />
         <Header />
         <Routes>
           <Route path="/login" element={<Login/>} />
