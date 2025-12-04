@@ -1,7 +1,39 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+
+const getAbsoluteTop = (element: HTMLElement): number => {
+  if (!element) {
+    return 0;
+  }
+  return element.offsetTop + getAbsoluteTop(element.offsetParent as HTMLElement);
+};
 
 export default function Footer(){
+  const loc = useLocation();
+  const navigate = useNavigate();
+  const isHome = loc.pathname === '/';
+
+  const scrollTo = (id: string) => {
+    if (isHome) {
+      const element = document.getElementById(id);
+      const header = document.getElementById('site-header');
+      if (element && header) {
+        const top = getAbsoluteTop(element) - header.offsetHeight;
+        window.scrollTo({
+          top,
+          behavior: 'smooth',
+        });
+      }
+    } else {
+      navigate('/', { state: { scrollTo: id } });
+    }
+  };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    scrollTo(id);
+  };
+
   return (
     <footer className="site-footer">
       <div className="container site-footer__inner">
@@ -18,9 +50,8 @@ export default function Footer(){
           <div className="footer-col flex flex-col items-center text-center">
             <h5 className="col-title">Navigation</h5>
             <ul className="mt-3 space-y-2 flex flex-col items-center">
-              <li><a href="#why" className="footer-link">Why TOTPly</a></li>
-              <li><a href="#how" className="footer-link">How it works</a></li>
-              <li><a href="#features" className="footer-link">Features</a></li>
+              <li><a href="#why" onClick={(e) => handleNavClick(e, 'why')} className="footer-link">Why TOTPly</a></li>
+              <li><a href="#how" onClick={(e) => handleNavClick(e, 'how')} className="footer-link">How it works</a></li>
               <li><a href="/docs" className="footer-link">Docs</a></li>
             </ul>
           </div>

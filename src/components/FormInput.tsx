@@ -18,7 +18,7 @@ export const FormInput: React.FC<FormInputProps> = ({
     <div className="form-field">
       <label className="block text-sm mb-2">{label}</label>
       <input 
-        className={`form-input ${className}`} 
+        className={`form-input ${error ? '!border-red-500 focus:!border-red-500 focus:!ring-red-500' : ''} ${className}`} 
         {...registration} 
         {...props} 
       />

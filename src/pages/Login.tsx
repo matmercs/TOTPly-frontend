@@ -37,10 +37,12 @@ export default function Login(){
       decorations={decorations}
       footer={footer}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormInput
           label="Email"
-          type="email" 
+          type="text"
+          inputMode="email"
+          autoComplete="username"
           registration={register('email', { required: 'Email is required' })}
           error={errors.email}
         />
@@ -48,12 +50,13 @@ export default function Login(){
         <FormInput
           label="Password"
           type="password"
+          autoComplete="current-password"
           registration={register('password', { required: 'Password is required' })}
           error={errors.password}
         />
 
         <div className="form-field">
-          <button type="submit" className="gradient-btn">Sign in</button>
+          <button type="submit" className="gradient-btn" formNoValidate>Sign in</button>
         </div>
       </form>
     </AuthLayout>
