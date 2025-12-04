@@ -83,22 +83,34 @@ export default function Header() {
             <a href="#how" onClick={(e) => handleNavClick(e, 'how')} className="nav-link">
               How it works
             </a>
-            {auth.isAuthenticated ? (
-              <Link to="/dashboard" className="nav-link">
-                Dashboard
-              </Link>
-            ) : null}
           </nav>
 
           <div className="flex items-center gap-3 pl-2 border-l border-gray-200/60">
-            <Link to="/login">
-              <Button variant="ghost" className="text-link">
-                Log in
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button className="signup-btn">Sign up</Button>
-            </Link>
+            {auth.isAuthenticated ? (
+              <>
+               <Link to="/dashboard">
+                 <Button variant="primary" className="shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                    Dashboard
+                 </Button>
+               </Link>
+               <Link to="/profile">
+                <Button variant="ghost" className="text-slate-600 hover:text-slate-900">
+                  Account
+                </Button>
+              </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" className="text-link">
+                    Log in
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="signup-btn">Sign up</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -139,13 +151,22 @@ export default function Header() {
                 How it works
               </a>
               {auth.isAuthenticated ? (
-                <Link 
-                  to="/dashboard" 
-                  onClick={() => setMobileOpen(false)}
-                  className="p-3 rounded-xl hover:bg-gray-50 transition-colors"
-                >
-                  Dashboard
-                </Link>
+                <>
+                  <Link 
+                    to="/dashboard" 
+                    onClick={() => setMobileOpen(false)}
+                    className="p-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800 shadow-md mt-2 text-center"
+                  >
+                    Dashboard
+                  </Link>
+                   <Link 
+                    to="/profile" 
+                    onClick={() => setMobileOpen(false)}
+                    className="p-3 rounded-xl hover:bg-gray-50 transition-colors text-center"
+                  >
+                    Account
+                  </Link>
+                </>
               ) : (
                 <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-gray-100">
                   <Link 

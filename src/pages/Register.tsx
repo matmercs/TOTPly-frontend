@@ -14,7 +14,7 @@ export default function Register(){
   const onSubmit = async (data: FormData) => {
     try{
       await auth.register(data.email, data.password)
-      navigate('/dashboard')
+      navigate('/verify-email')
     }catch(err:any){
       alert(err?.message || String(err))
     }

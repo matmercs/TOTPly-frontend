@@ -55,6 +55,10 @@ export default function Login(){
           error={errors.password}
         />
 
+        <div className="flex justify-end mb-6">
+          <Link to="/forgot-password" className="text-sm text-slate-500 hover:text-slate-800 font-medium">Forgot password?</Link>
+        </div>
+
         <div className="form-field">
           <button type="submit" className="gradient-btn" formNoValidate>Sign in</button>
         </div>

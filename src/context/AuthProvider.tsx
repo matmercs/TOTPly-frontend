@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { CONFIG } from '../config'
 
 type User = { id: string; email: string }
 
@@ -25,52 +26,79 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }
   const navigate = useNavigate()
 
   useEffect(()=>{
-    if(token){
+    const storedToken = localStorage.getItem('auth_token');
+    if (storedToken) {
+      setToken(storedToken);
+      try {
+         const payload = JSON.parse(atob(storedToken));
+         setUser({ id: payload.sub, email: payload.email });
+      } catch {
+         setUser({ id: 'mock-user', email: 'user@example.com' });
+      }
+    }
+
+    if(token && CONFIG.MODE === 'real'){
       try{
         const payload = JSON.parse(atob(token))
         if(payload.exp && payload.exp * 1000 < Date.now()){
-          
           logout()
         }
       }catch(e){
-        
         logout()
       }
     }
   }, [token])
 
   const login = async (email: string, password: string) => {
-    try{
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      if(!res.ok) throw new Error((await res.json()).message || 'Login failed')
-      const data = await res.json()
-      setToken(data.token)
-      setUser(data.user)
-      
-      localStorage.setItem('auth_token', data.token)
-    }catch(err){
-      throw err
+    if (CONFIG.MODE === 'test') {
+      await new Promise(r => setTimeout(r, 500));
+      const dummyUser = { id: 'mock-user-id', email };
+      const mockToken = makeToken(dummyUser);
+      setToken(mockToken);
+      setUser(dummyUser);
+      localStorage.setItem('auth_token', mockToken);
+    } else {
+      try{
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        })
+        if(!res.ok) throw new Error((await res.json()).message || 'Login failed')
+        const data = await res.json()
+        setToken(data.token)
+        setUser(data.user)
+        
+        localStorage.setItem('auth_token', data.token)
+      }catch(err){
+        throw err
+      }
     }
   }
 
   const register = async (email: string, password: string) => {
-    try{
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      if(!res.ok) throw new Error((await res.json()).message || 'Register failed')
-      const data = await res.json()
-      setToken(data.token)
-      setUser(data.user)
-      localStorage.setItem('auth_token', data.token)
-    }catch(err){
-      throw err
+    if (CONFIG.MODE === 'test') {
+      await new Promise(r => setTimeout(r, 500));
+      const dummyUser = { id: 'mock-user-id', email };
+      const mockToken = makeToken(dummyUser);
+      setToken(mockToken);
+      setUser(dummyUser);
+      localStorage.setItem('auth_token', mockToken);
+    } else {
+      try{
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        })
+        if(!res.ok) throw new Error((await res.json()).message || 'Register failed')
+        const data = await res.json()
+        setToken(data.token)
+        setUser(data.user)
+        localStorage.setItem('auth_token', data.token)
+      }catch(err){
+        throw err
+      }
     }
   }
 

@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollToSection } from '../hooks/useScrollToSection';
+import { useAuth } from '../context/AuthProvider';
 
 export default function Home() {
   useScrollToSection('site-header');
+  const { isAuthenticated } = useAuth();
 
   return (
     <main>
@@ -28,19 +30,31 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col items-center justify-center gap-3 mt-6 hero-cta">
-            <Link 
-              to="/register" 
-              className="inline-flex items-center justify-center px-6 py-3 text-base font-bold text-white transition-all duration-200 bg-slate-900 rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transform active:scale-95 shadow-lg hover:shadow-xl" 
-              style={{ width: 240 }}
-            >
-              Get started
-            </Link>
-            <div className="hero-login" style={{ marginTop: 12 }}>
-              Already have an account?{' '}
-              <Link to="/login" className="underline-link">
-                Log in
+            {isAuthenticated ? (
+              <Link 
+                to="/dashboard" 
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-bold text-white transition-all duration-200 bg-slate-900 rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transform active:scale-95 shadow-lg hover:shadow-xl" 
+                style={{ width: 260 }}
+              >
+                Enter my Dashboard
               </Link>
-            </div>
+            ) : (
+              <>
+                <Link 
+                  to="/register" 
+                  className="inline-flex items-center justify-center px-6 py-3 text-base font-bold text-white transition-all duration-200 bg-slate-900 rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transform active:scale-95 shadow-lg hover:shadow-xl" 
+                  style={{ width: 240 }}
+                >
+                  Get started
+                </Link>
+                <div className="hero-login" style={{ marginTop: 12 }}>
+                  Already have an account?{' '}
+                  <Link to="/login" className="underline-link">
+                    Log in
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -171,13 +185,23 @@ export default function Home() {
               Open source, secure, and free to start.
             </p>
             
-            <Link 
-              to="/register" 
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-900 transition-all duration-200 bg-gradient-to-r from-purple-100 to-blue-100 rounded-xl hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-100 transform active:scale-95 shadow-lg hover:shadow-xl" 
-              style={{ width: 280 }}
-            >
-              Get started
-            </Link>
+            {isAuthenticated ? (
+              <Link 
+                to="/dashboard" 
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-900 transition-all duration-200 bg-gradient-to-r from-purple-100 to-blue-100 rounded-xl hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-100 transform active:scale-95 shadow-lg hover:shadow-xl" 
+                style={{ width: 280 }}
+              >
+                Enter my Dashboard
+              </Link>
+            ) : (
+              <Link 
+                to="/register" 
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-900 transition-all duration-200 bg-gradient-to-r from-purple-100 to-blue-100 rounded-xl hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-100 transform active:scale-95 shadow-lg hover:shadow-xl" 
+                style={{ width: 280 }}
+              >
+                Get started
+              </Link>
+            )}
           </div>
         </section>
       </div>
