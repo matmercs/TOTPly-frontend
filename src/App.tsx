@@ -21,20 +21,22 @@ export default function App(){
   return (
     <AuthProvider>
       <ErrorBoundary>
-      <div className="min-h-screen bg-[var(--color-white)] text-gray-900">
+      <div className="min-h-screen flex flex-col bg-[var(--color-white)] text-gray-900">
         <ScrollToTop />
         <Header />
-        <Routes>
-          <Route path="/login" element={<Login/>} />
-          <Route path="/register" element={<Register/>} />
-          <Route path="/verify-email" element={<VerifyEmail/>} />
-          <Route path="/forgot-password" element={<ForgotPassword/>} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>} />
-          <Route path="/add" element={<ProtectedRoute><AddSecret/></ProtectedRoute>} />
-          <Route path="/edit/:id" element={<ProtectedRoute><EditSecret/></ProtectedRoute>} />
-          <Route path="/" element={<Home/>} />
-        </Routes>
+        <div className="flex-grow w-full">
+          <Routes>
+            <Route path="/login" element={<Login/>} />
+            <Route path="/register" element={<Register/>} />
+            <Route path="/verify-email" element={<VerifyEmail/>} />
+            <Route path="/forgot-password" element={<ForgotPassword/>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>} />
+            <Route path="/add" element={<ProtectedRoute><AddSecret/></ProtectedRoute>} />
+            <Route path="/edit/:id" element={<ProtectedRoute><EditSecret/></ProtectedRoute>} />
+            <Route path="/" element={<Home/>} />
+          </Routes>
+        </div>
         <Footer />
       </div>
       </ErrorBoundary>
