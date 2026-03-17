@@ -1,5 +1,3 @@
 export const CONFIG = {
-  // 'test' or 'real'
-  MODE: (import.meta.env.VITE_APP_MODE as 'test' | 'real') || 'test',
-  API_BASE: '/api'
+  API_BASE: import.meta.env.VITE_API_BASE || '/api'
 }

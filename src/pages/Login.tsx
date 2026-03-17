@@ -10,11 +10,15 @@ export default function Login(){
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
   const navigate = useNavigate()
   const auth = useAuth()
-  
+
   const onSubmit = async (data: FormData) => {
     try{
-      await auth.login(data.email, data.password)
-      navigate('/dashboard')
+      const result = await auth.login(data.email, data.password)
+      if (result.requireEmailCode) {
+        navigate('/verify-email')
+      } else {
+        navigate('/dashboard')
+      }
     }catch(err:any){
       alert(err?.message || String(err))
     }
@@ -24,7 +28,7 @@ export default function Login(){
 
   const footer = (
     <>
-      <span className="text-sm">Don’t have an account? </span>
+      <span className="text-sm">Don't have an account? </span>
       <Link to="/register" className="muted-link">Create one</Link>
     </>
   )

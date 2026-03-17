@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
-import { CONFIG } from '../config';
+import { useAuth } from '../context/AuthProvider';
 
 export default function VerifyEmail() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const handleChange = (index: number, value: string) => {
     if (isNaN(Number(value))) return;
-    
+
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
@@ -32,7 +34,7 @@ export default function VerifyEmail() {
        setCode(newCode);
     }
   };
-  
+
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
       const prevInput = document.getElementById(`code-${index - 1}`);
@@ -43,27 +45,29 @@ export default function VerifyEmail() {
   const handleSubmit = async () => {
      const fullCode = code.join('');
      if (fullCode.length !== 6) return;
-     
+
      setLoading(true);
-     
+     setError('');
+
      try {
-         if (CONFIG.MODE === 'test') {
-             await new Promise(r => setTimeout(r, 800));
-             navigate('/dashboard');
-         } else {
-             const res = await fetch('/api/auth/verify', {
-                 method: 'POST',
-                 headers: {'Content-Type': 'application/json'},
-                 body: JSON.stringify({ code: fullCode })
-             });
-             if (!res.ok) throw new Error('Invalid code');
-             navigate('/dashboard');
-         }
-     } catch (error) {
-         alert('Verification failed. Please try again.');
+       if (auth.tempToken) {
+         await auth.verifyLogin(fullCode);
+       } else if (auth.pendingEmail) {
+         await auth.verifyEmail(auth.pendingEmail, fullCode);
+       }
+       navigate('/dashboard');
+     } catch (err: any) {
+       setError(err?.message || 'Verification failed. Please try again.');
      } finally {
-         setLoading(false);
+       setLoading(false);
      }
+  };
+
+  const handleResend = async () => {
+    if (!auth.pendingEmail) return;
+    try {
+      await auth.resendVerification(auth.pendingEmail);
+    } catch {}
   };
 
   return (
@@ -75,12 +79,19 @@ export default function VerifyEmail() {
             <polyline points="22,6 12,13 2,6"></polyline>
           </svg>
         </div>
-        
+
         <h1 className="text-2xl font-bold text-slate-900 mb-2">Verify your email</h1>
         <p className="text-slate-600 mb-8 leading-relaxed">
-          Please enter the 6-digit code sent to your email address to activate your account.
+          Please enter the 6-digit code sent to{' '}
+          {auth.pendingEmail ? <strong>{auth.pendingEmail}</strong> : 'your email address'}.
         </p>
-        
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+            {error}
+          </div>
+        )}
+
         <div className="flex justify-center gap-2 mb-8">
             {code.map((digit, index) => (
                 <input
@@ -97,20 +108,23 @@ export default function VerifyEmail() {
                 />
             ))}
         </div>
-        
+
         <div className="space-y-4">
-          <Button 
-            className="w-full py-3 text-lg shadow-lg shadow-purple-200" 
+          <Button
+            className="w-full py-3 text-lg shadow-lg shadow-purple-200"
             onClick={handleSubmit}
             disabled={loading || code.some(d => !d)}
           >
             {loading ? 'Verifying...' : 'Verify Account'}
           </Button>
-          
+
           <div className="text-sm text-slate-500 mt-6">
-            Didn't receive the code? <button className="text-purple-600 font-bold hover:underline">Resend</button>
+            Didn't receive the code?{' '}
+            <button onClick={handleResend} className="text-purple-600 font-bold hover:underline">
+              Resend
+            </button>
           </div>
-          
+
           <div className="pt-4 border-t border-slate-100">
             <Link to="/login" className="text-slate-400 hover:text-slate-600 text-sm font-medium">Back to Log in</Link>
           </div>
