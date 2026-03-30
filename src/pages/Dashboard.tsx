@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { apiFetch } from '../hooks/useApi'
+import { apiFetch, ApiError } from '../hooks/useApi'
+import { CONFIG } from '../config'
 import { Link } from 'react-router-dom'
 import { IconCopy, IconEdit, IconDelete } from '../components/Icons'
 import { Button } from '../components/Button'
@@ -34,11 +35,17 @@ export default function Dashboard(){
   }, [])
 
   useEffect(() => {
-    let mounted = true
-    const update = async () => {
+    if (items.length === 0) return
+
+    const token = localStorage.getItem('auth_token')
+    if (!token) return
+
+    const es = new EventSource(`${CONFIG.API_BASE}/totp/codes/stream?token=${encodeURIComponent(token)}`)
+
+    es.onmessage = (event) => {
       try {
-        const data = await apiFetch<CodeData[]>('/totp/codes')
-        if (mounted && Array.isArray(data)) {
+        const data: CodeData[] = JSON.parse(event.data)
+        if (Array.isArray(data)) {
           const map: Record<string, { code: string; remainingSeconds: number; period: number }> = {}
           data.forEach(c => {
             map[c.id] = { code: c.code, remainingSeconds: c.remainingSeconds, period: c.period }
@@ -48,9 +55,11 @@ export default function Dashboard(){
       } catch {}
     }
 
-    if (items.length > 0) update()
-    const fetchId = setInterval(update, 2000)
-    return () => { mounted = false; clearInterval(fetchId) }
+    es.onerror = () => {
+      // EventSource auto-reconnects; close only if component unmounts
+    }
+
+    return () => { es.close() }
   }, [items])
 
   useEffect(() => {
@@ -72,7 +81,13 @@ export default function Dashboard(){
       await apiFetch(`/totp/${id}`, { method: 'DELETE' })
       setItems(items.filter(i => i.id !== id))
     } catch (e: any) {
-      alert(e?.message || 'Failed to delete')
+      if (e instanceof ApiError && e.statusCode === 429) {
+        alert('Too many requests. Please wait a moment and try again.')
+      } else if (e instanceof ApiError && e.statusCode === 404) {
+        setItems(items.filter(i => i.id !== id))
+      } else {
+        alert(e?.message || 'Failed to delete')
+      }
     }
   }
 
