@@ -8,10 +8,13 @@ type FormData = { email: string; password: string }
 
 export default function Login(){
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
+  const [loading, setLoading] = React.useState(false)
   const navigate = useNavigate()
   const auth = useAuth()
 
   const onSubmit = async (data: FormData) => {
+    if (loading) return
+    setLoading(true)
     try{
       const result = await auth.login(data.email, data.password)
       if (result.requireEmailCode) {
@@ -21,6 +24,8 @@ export default function Login(){
       }
     }catch(err:any){
       alert(err?.message || String(err))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -64,7 +69,7 @@ export default function Login(){
         </div>
 
         <div className="form-field">
-          <button type="submit" className="gradient-btn" formNoValidate>Sign in</button>
+          <button type="submit" className="gradient-btn" formNoValidate disabled={loading}>{loading ? 'Signing in...' : 'Sign in'}</button>
         </div>
       </form>
     </AuthLayout>
